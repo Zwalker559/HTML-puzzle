@@ -1,4 +1,5 @@
 export default function generatePuzzle(cfg) {
+  // --- RIDDLE ---
   if (cfg.type === "riddle") {
     return {
       type: "riddle",
@@ -8,6 +9,7 @@ export default function generatePuzzle(cfg) {
     };
   }
 
+  // --- CODE ---
   if (cfg.type === "code") {
     const code = Array.from({ length: cfg.length }, () =>
       Math.floor(Math.random() * 10)
@@ -21,6 +23,7 @@ export default function generatePuzzle(cfg) {
     };
   }
 
+  // --- MATH ---
   if (cfg.type === "math") {
     const a = Math.floor(Math.random() * 10 * cfg.difficulty);
     const b = Math.floor(Math.random() * 10 * cfg.difficulty);
@@ -35,20 +38,27 @@ export default function generatePuzzle(cfg) {
     };
   }
 
+  // --- SLIDING PUZZLE ---
   if (cfg.type === "sliding") {
     const size = cfg.size || 3;
     const tiles = Array.from({ length: size * size }, (_, i) => i);
 
-    // Shuffle
+    // Shuffle tiles
     for (let i = tiles.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
     }
 
-    // NEW: flexible solved check
+    // Flexible solved check:
+    // Accepts BOTH:
+    // 0 1 2 3 4 5 6 7 8
+    // AND
+    // 1 2 3 4 5 6 7 8 0
     const checkSolved = (arr) => {
       const solvedA = arr.every((v, i) => v === i); // 0 at start
-      const solvedB = arr.slice(0, -1).every((v, i) => v === i + 1) && arr[arr.length - 1] === 0; // 0 at end
+      const solvedB =
+        arr.slice(0, -1).every((v, i) => v === i + 1) &&
+        arr[arr.length - 1] === 0; // 0 at end
       return solvedA || solvedB;
     };
 
@@ -61,8 +71,10 @@ export default function generatePuzzle(cfg) {
     };
   }
 
+  // --- ESCAPE ROOM (V2) ---
   if (cfg.type === "escapeRoom") {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
+
     return {
       type: "escapeRoom",
       room: cfg.room || "room",
@@ -71,6 +83,7 @@ export default function generatePuzzle(cfg) {
     };
   }
 
+  // --- MAZE ---
   if (cfg.type === "maze") {
     return {
       type: "maze",
@@ -78,6 +91,7 @@ export default function generatePuzzle(cfg) {
     };
   }
 
+  // --- UNKNOWN TYPE ---
   return {
     type: "unknown",
     prompt: "Unknown puzzle type.",
