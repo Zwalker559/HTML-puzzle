@@ -12,6 +12,8 @@ export default function PuzzlePage() {
 
   const [puzzle, setPuzzle] = useState(null);
   const [input, setInput] = useState("");
+  const [progress, setProgress] = useState([]);
+  const [total, setTotal] = useState(config.puzzles.length);
 
   const numericIndex = parseInt(index, 10);
 
@@ -25,15 +27,29 @@ export default function PuzzlePage() {
     if (!index) return;
 
     const orderRaw = sessionStorage.getItem("puzzleOrder");
-    if (!orderRaw) {
+    const progressRaw = sessionStorage.getItem("progress");
+
+    if (!orderRaw || !progressRaw) {
       resetAll();
       return;
     }
 
     const order = JSON.parse(orderRaw);
+    const prog = JSON.parse(progressRaw);
+
+    setProgress(prog);
+    setTotal(order.length);
+
     const idx = numericIndex - 1;
     if (idx < 0 || idx >= order.length) {
       resetAll();
+      return;
+    }
+
+    // NEW: prevent skipping
+    if (numericIndex > 1 && !prog[numericIndex - 2]) {
+      const firstUnsolved = prog.findIndex((p) => p === false) + 1;
+      router.push(`/puzzle/${firstUnsolved}`);
       return;
     }
 
@@ -50,10 +66,22 @@ export default function PuzzlePage() {
       sessionStorage.setItem("puzzleCache", JSON.stringify(cache));
       setPuzzle(generated);
     }
-  }, [index, numericIndex, config.puzzles, resetAll]);
+  }, [index, numericIndex, config.puzzles, resetAll, router]);
 
-  function goNext() {
-    if (numericIndex >= config.puzzles.length) {
+  function updateProgressAndGoNext() {
+    const progressRaw = sessionStorage.getItem("progress");
+    const prog = progressRaw ? JSON.parse(progressRaw) : null;
+    if (!prog) {
+      resetAll();
+      return;
+    }
+
+    // Mark current puzzle as solved
+    prog[numericIndex - 1] = true;
+    sessionStorage.setItem("progress", JSON.stringify(prog));
+    setProgress(prog);
+
+    if (numericIndex >= total) {
       router.push("/final");
     } else {
       router.push(`/puzzle/${numericIndex + 1}`);
@@ -63,22 +91,34 @@ export default function PuzzlePage() {
   function checkAnswer() {
     if (!puzzle) return;
     if (puzzle.check(input)) {
-      goNext();
+      updateProgressAndGoNext();
     }
   }
 
   function handleSolved() {
-    goNext();
+    updateProgressAndGoNext();
   }
 
-  if (!index || !puzzle) {
+  if (!index || !puzzle || !progress.length) {
     return <p>Loading...</p>;
   }
+
+  const solvedCount = progress.filter((p) => p).length;
+  const percent = (solvedCount / total) * 100;
 
   return (
     <div>
       <Timer onExpire={resetAll} />
       <h1>Puzzle {index}</h1>
+
+      {/* NEW: Progress bar */}
+      <div className="progress-bar">
+        <div className="progress-fill" style={{ width: `${percent}%` }} />
+      </div>
+      <p>
+        Progress: {solvedCount} / {total}
+      </p>
+
       <PuzzleUI
         puzzle={puzzle}
         input={input}
