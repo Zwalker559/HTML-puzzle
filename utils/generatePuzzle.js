@@ -1,0 +1,71 @@
+export default function generatePuzzle(cfg) {
+  if (cfg.type === "riddle") {
+    return {
+      type: "riddle",
+      prompt: cfg.prompt,
+      check: (input) => cfg.answers.map(a => a.toLowerCase()).includes(input.toLowerCase())
+    };
+  }
+
+  if (cfg.type === "code") {
+    const code = Array.from({ length: cfg.length }, () =>
+      Math.floor(Math.random() * 10)
+    ).join("");
+
+    return {
+      type: "code",
+      prompt: `Enter the ${cfg.length}-digit code:`,
+      code,
+      check: (input) => input === code
+    };
+  }
+
+  if (cfg.type === "math") {
+    const a = Math.floor(Math.random() * 10 * cfg.difficulty);
+    const b = Math.floor(Math.random() * 10 * cfg.difficulty);
+    const op = Math.random() < 0.5 ? "+" : "-";
+    const answer = op === "+" ? a + b : a - b;
+
+    return {
+      type: "math",
+      prompt: `Solve: ${a} ${op} ${b}`,
+      answer,
+      check: (input) => parseInt(input, 10) === answer
+    };
+  }
+
+  if (cfg.type === "sliding") {
+    const size = cfg.size || 3;
+    const tiles = Array.from({ length: size * size }, (_, i) => i);
+    // Shuffle
+    for (let i = tiles.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+    }
+
+    return {
+      type: "sliding",
+      prompt: "Arrange the tiles into the correct order.",
+      tiles,
+      size,
+      check: (current) => current.every((v, i) => v === i)
+    };
+  }
+
+  if (cfg.type === "escape") {
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    return {
+      type: "escape",
+      prompt: "Find the hidden code in the room and use it to escape.",
+      code,
+      room: cfg.room || "room",
+      check: (input) => input === code
+    };
+  }
+
+  return {
+    type: "unknown",
+    prompt: "Unknown puzzle type.",
+    check: () => false
+  };
+}
