@@ -77,3 +77,20 @@ input {
 input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
+
+/* Prevent zoom on mobile */
+input, button {
+  font-size: 16px !important;
+}
+
+/* Responsive card */
+.card {
+  width: 95%;
+  padding: 20px;
+}
+
+/* Make buttons bigger on mobile */
+button {
+  padding: 14px 18px;
+  margin: 4px;
+}
