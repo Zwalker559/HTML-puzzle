@@ -38,17 +38,26 @@ export default function generatePuzzle(cfg) {
   if (cfg.type === "sliding") {
     const size = cfg.size || 3;
     const tiles = Array.from({ length: size * size }, (_, i) => i);
+
+    // Shuffle
     for (let i = tiles.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
     }
+
+    // NEW: flexible solved check
+    const checkSolved = (arr) => {
+      const solvedA = arr.every((v, i) => v === i); // 0 at start
+      const solvedB = arr.slice(0, -1).every((v, i) => v === i + 1) && arr[arr.length - 1] === 0; // 0 at end
+      return solvedA || solvedB;
+    };
 
     return {
       type: "sliding",
       prompt: "Arrange the tiles into the correct order.",
       tiles,
       size,
-      check: (current) => current.every((v, i) => v === i)
+      check: checkSolved
     };
   }
 
