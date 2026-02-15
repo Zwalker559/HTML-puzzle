@@ -6,13 +6,13 @@
   "puzzles": [
     { "type": "riddle", "prompt": "I speak without a mouth and hear without ears. What am I?", "answers": ["echo"] },
     { "type": "sliding", "size": 3 },
-    { "type": "escape", "room": "lab" },
+    { "type": "escapeRoom", "room": "office" },
+    { "type": "maze", "size": 8 },
     { "type": "math", "difficulty": 1 },
     { "type": "code", "length": 4 },
     { "type": "riddle", "prompt": "What has keys but can't open locks?", "answers": ["piano"] },
     { "type": "sliding", "size": 4 },
-    { "type": "math", "difficulty": 2 },
-    { "type": "escape", "room": "vault" },
+    { "type": "escapeRoom", "room": "vault" },
     { "type": "riddle", "prompt": "What gets wetter the more it dries?", "answers": ["towel"] }
   ]
 }
