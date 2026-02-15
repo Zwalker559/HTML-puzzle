@@ -3,7 +3,8 @@ export default function generatePuzzle(cfg) {
     return {
       type: "riddle",
       prompt: cfg.prompt,
-      check: (input) => cfg.answers.map(a => a.toLowerCase()).includes(input.toLowerCase())
+      check: (input) =>
+        cfg.answers.map((a) => a.toLowerCase()).includes(input.toLowerCase())
     };
   }
 
@@ -37,7 +38,6 @@ export default function generatePuzzle(cfg) {
   if (cfg.type === "sliding") {
     const size = cfg.size || 3;
     const tiles = Array.from({ length: size * size }, (_, i) => i);
-    // Shuffle
     for (let i = tiles.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
@@ -52,14 +52,20 @@ export default function generatePuzzle(cfg) {
     };
   }
 
-  if (cfg.type === "escape") {
+  if (cfg.type === "escapeRoom") {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     return {
-      type: "escape",
-      prompt: "Find the hidden code in the room and use it to escape.",
-      code,
+      type: "escapeRoom",
       room: cfg.room || "room",
+      code,
       check: (input) => input === code
+    };
+  }
+
+  if (cfg.type === "maze") {
+    return {
+      type: "maze",
+      size: cfg.size || 8
     };
   }
 
