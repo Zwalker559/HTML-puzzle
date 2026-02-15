@@ -1,10 +1,10 @@
 {
   "timerSeconds": 150,
-  "finalQuestion": "What walks on four legs in the morning, two at noon, and three in the evening?",
-  "finalAnswer": "man",
-  "finalSecret": "THE TREASURE IS BURIED UNDER THE OLD OAK TREE",
+  "finalQuestion": "How old am I?",
+  "finalAnswer": "15",
+  "finalSecret": "I kinda do find you cute, BUT your taken and I respect that and I still wanna be friends with you.",
   "puzzles": [
-    { "type": "riddle", "prompt": "I speak without a mouth and hear without ears. What am I?", "answers": ["echo"] },
+    { "type": "riddle", "prompt": "What ROTC branch am I?", "answers": ["Air Force"] },
     { "type": "sliding", "size": 3 },
     { "type": "escapeRoom", "room": "office" },
     { "type": "maze", "size": 8 },
