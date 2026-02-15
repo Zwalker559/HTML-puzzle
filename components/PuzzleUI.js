@@ -1,5 +1,4 @@
 import SlidingPuzzle from "./puzzles/SlidingPuzzle";
-import EscapeRoom from "./puzzles/EscapeRoom"; // old simple one if you still keep it
 import EscapeRoomV2 from "./puzzles/EscapeRoomV2";
 import MazePuzzle from "./puzzles/MazePuzzle";
 
@@ -12,10 +11,6 @@ export default function PuzzleUI({
 }) {
   if (puzzle.type === "sliding") {
     return <SlidingPuzzle puzzle={puzzle} onSolved={onSolved} />;
-  }
-
-  if (puzzle.type === "escape") {
-    return <EscapeRoom puzzle={puzzle} onSolved={onSolved} />;
   }
 
   if (puzzle.type === "escapeRoom") {
