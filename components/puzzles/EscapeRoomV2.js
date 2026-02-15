@@ -26,7 +26,9 @@ export default function EscapeRoomV2({ puzzle, onSolved }) {
         style={{
           display: "flex",
           gap: "20px",
-          marginTop: "20px"
+          marginTop: "20px",
+          flexWrap: "wrap",
+          justifyContent: "center"
         }}
       >
         {objects.map((obj) => (
