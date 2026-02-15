@@ -5,7 +5,6 @@ export default function MazePuzzle({ puzzle, onSolved }) {
   const [player, setPlayer] = useState({ x: 0, y: 0 });
   const goal = { x: size - 1, y: size - 1 };
 
-  // simple static walls; you can customize or randomize later
   const walls = new Set(["1,1", "2,1", "3,3", "4,2"]);
 
   function move(dx, dy) {
@@ -18,31 +17,45 @@ export default function MazePuzzle({ puzzle, onSolved }) {
     const next = { x: nx, y: ny };
     setPlayer(next);
 
-    if (next.x === goal.x && next.y === goal.y) {
-      onSolved();
+    if (next.x === goal.x && next.y === goal.y) onSolved();
+  }
+
+  // --- SWIPE SUPPORT ---
+  let startX = 0;
+  let startY = 0;
+
+  function touchStart(e) {
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+  }
+
+  function touchEnd(e) {
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (dx > 20) move(1, 0);
+      if (dx < -20) move(-1, 0);
+    } else {
+      if (dy > 20) move(0, 1);
+      if (dy < -20) move(0, -1);
     }
   }
 
-  useEffect(() => {
-    function handleKey(e) {
-      if (e.key === "ArrowUp") move(0, -1);
-      if (e.key === "ArrowDown") move(0, 1);
-      if (e.key === "ArrowLeft") move(-1, 0);
-      if (e.key === "ArrowRight") move(1, 0);
-    }
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [player]);
+  // --- RESPONSIVE TILE SIZE ---
+  const tileSize = Math.min(50, Math.floor(window.innerWidth / (size + 2)));
 
   return (
-    <div>
-      <p>Use arrow keys to reach the green goal square.</p>
+    <div onTouchStart={touchStart} onTouchEnd={touchEnd}>
+      <p>Swipe or use buttons to reach the green goal.</p>
+
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${size}, 40px)`,
+          gridTemplateColumns: `repeat(${size}, ${tileSize}px)`,
           gap: "4px",
-          marginTop: "20px"
+          marginTop: "20px",
+          justifyContent: "center"
         }}
       >
         {Array.from({ length: size * size }).map((_, i) => {
@@ -56,8 +69,8 @@ export default function MazePuzzle({ puzzle, onSolved }) {
             <div
               key={i}
               style={{
-                width: "40px",
-                height: "40px",
+                width: `${tileSize}px`,
+                height: `${tileSize}px`,
                 background: isPlayer
                   ? "cyan"
                   : isGoal
@@ -70,6 +83,16 @@ export default function MazePuzzle({ puzzle, onSolved }) {
             />
           );
         })}
+      </div>
+
+      {/* MOBILE BUTTONS */}
+      <div style={{ marginTop: "20px", textAlign: "center" }}>
+        <button onClick={() => move(0, -1)}>↑</button>
+        <div>
+          <button onClick={() => move(-1, 0)}>←</button>
+          <button onClick={() => move(1, 0)}>→</button>
+        </div>
+        <button onClick={() => move(0, 1)}>↓</button>
       </div>
     </div>
   );
