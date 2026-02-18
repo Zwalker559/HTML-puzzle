@@ -14,8 +14,6 @@ export default function Final() {
       return;
     }
     const prog = JSON.parse(progressRaw);
-
-    // NEW: ensure all puzzles solved
     if (prog.every((p) => p === true)) {
       setAllowed(true);
     } else {
