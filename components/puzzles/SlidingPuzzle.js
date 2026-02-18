@@ -1,11 +1,30 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 export default function SlidingPuzzle({ puzzle, onSolved }) {
   const [tiles, setTiles] = useState(puzzle.tiles);
   const size = puzzle.size;
-
-  // --- TOUCH SWIPE SUPPORT ---
   const touchStart = useRef(null);
+
+  function moveTile(index) {
+    const empty = tiles.indexOf(0);
+
+    const row = Math.floor(index / size);
+    const col = index % size;
+    const emptyRow = Math.floor(empty / size);
+    const emptyCol = empty % size;
+
+    const isAdjacent =
+      (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
+      (col === emptyCol && Math.abs(row - emptyRow) === 1);
+
+    if (!isAdjacent) return;
+
+    const newTiles = [...tiles];
+    [newTiles[index], newTiles[empty]] = [newTiles[empty], newTiles[index]];
+    setTiles(newTiles);
+
+    if (puzzle.check(newTiles)) onSolved();
+  }
 
   function handleTouchStart(e) {
     const t = e.touches[0];
@@ -29,48 +48,24 @@ export default function SlidingPuzzle({ puzzle, onSolved }) {
     let target = null;
 
     if (absX > absY) {
-      if (dx > 20 && col > 0) target = empty - 1; // swipe right
-      if (dx < -20 && col < size - 1) target = empty + 1; // swipe left
+      if (dx > 20 && col > 0) target = empty - 1;
+      if (dx < -20 && col < size - 1) target = empty + 1;
     } else {
-      if (dy > 20 && row > 0) target = empty - size; // swipe down
-      if (dy < -20 && row < size - 1) target = empty + size; // swipe up
+      if (dy > 20 && row > 0) target = empty - size;
+      if (dy < -20 && row < size - 1) target = empty + size;
     }
 
     if (target !== null) moveTile(target);
   }
 
-  // --- TILE MOVE ---
-  function moveTile(index) {
-    const empty = tiles.indexOf(0);
-
-    const row = Math.floor(index / size);
-    const col = index % size;
-    const emptyRow = Math.floor(empty / size);
-    const emptyCol = empty % size;
-
-    const isAdjacent =
-      (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
-      (col === emptyCol && Math.abs(row - emptyRow) === 1);
-
-    if (!isAdjacent) return;
-
-    const newTiles = [...tiles];
-    [newTiles[index], newTiles[empty]] = [newTiles[empty], newTiles[index]];
-    setTiles(newTiles);
-
-    if (puzzle.check(newTiles)) onSolved();
-  }
-
-  // --- RESPONSIVE TILE SIZE ---
-  const tileSize = Math.min(90, Math.floor(window.innerWidth / (size + 2)));
+  const tileSize =
+    typeof window !== "undefined"
+      ? Math.min(90, Math.floor(window.innerWidth / (size + 2)))
+      : 70;
 
   return (
-    <div
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <p>{puzzle.prompt}</p>
-
       <div
         style={{
           display: "grid",
