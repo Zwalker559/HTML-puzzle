@@ -1,5 +1,5 @@
 export default function generatePuzzle(cfg) {
-  // --- RIDDLE ---
+  // SIMPLE RIDDLE
   if (cfg.type === "riddle") {
     return {
       type: "riddle",
@@ -9,7 +9,7 @@ export default function generatePuzzle(cfg) {
     };
   }
 
-  // --- CODE ---
+  // CODE
   if (cfg.type === "code") {
     const code = Array.from({ length: cfg.length }, () =>
       Math.floor(Math.random() * 10)
@@ -23,7 +23,7 @@ export default function generatePuzzle(cfg) {
     };
   }
 
-  // --- MATH ---
+  // MATH
   if (cfg.type === "math") {
     const a = Math.floor(Math.random() * 10 * cfg.difficulty);
     const b = Math.floor(Math.random() * 10 * cfg.difficulty);
@@ -38,27 +38,33 @@ export default function generatePuzzle(cfg) {
     };
   }
 
-  // --- SLIDING PUZZLE ---
+  // SOLVABLE SLIDING PUZZLE
   if (cfg.type === "sliding") {
     const size = cfg.size || 3;
-    const tiles = Array.from({ length: size * size }, (_, i) => i);
+    let tiles = Array.from({ length: size * size }, (_, i) => i);
 
-    // Shuffle tiles
-    for (let i = tiles.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+    function isSolvable(arr) {
+      let inv = 0;
+      for (let i = 0; i < arr.length; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+          if (arr[i] && arr[j] && arr[i] > arr[j]) inv++;
+        }
+      }
+      return inv % 2 === 0;
     }
 
-    // Flexible solved check:
-    // Accepts BOTH:
-    // 0 1 2 3 4 5 6 7 8
-    // AND
-    // 1 2 3 4 5 6 7 8 0
+    do {
+      for (let i = tiles.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+      }
+    } while (!isSolvable(tiles));
+
     const checkSolved = (arr) => {
-      const solvedA = arr.every((v, i) => v === i); // 0 at start
+      const solvedA = arr.every((v, i) => v === i);
       const solvedB =
         arr.slice(0, -1).every((v, i) => v === i + 1) &&
-        arr[arr.length - 1] === 0; // 0 at end
+        arr[arr.length - 1] === 0;
       return solvedA || solvedB;
     };
 
@@ -71,19 +77,27 @@ export default function generatePuzzle(cfg) {
     };
   }
 
-  // --- ESCAPE ROOM (V2) ---
-  if (cfg.type === "escapeRoom") {
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
+  // MULTI-RIDDLE ROOM
+  if (cfg.type === "riddleRoom") {
+    const riddles = cfg.riddles || [];
+    const selected = [];
+
+    for (let i = 0; i < 3; i++) {
+      const r = riddles[Math.floor(Math.random() * riddles.length)];
+      selected.push(r);
+    }
+
+    const code = selected.map((r) => r.digit).join("");
 
     return {
-      type: "escapeRoom",
-      room: cfg.room || "room",
+      type: "riddleRoom",
+      riddles: selected,
       code,
       check: (input) => input === code
     };
   }
 
-  // --- MAZE ---
+  // MAZE
   if (cfg.type === "maze") {
     return {
       type: "maze",
@@ -91,7 +105,6 @@ export default function generatePuzzle(cfg) {
     };
   }
 
-  // --- UNKNOWN TYPE ---
   return {
     type: "unknown",
     prompt: "Unknown puzzle type.",
