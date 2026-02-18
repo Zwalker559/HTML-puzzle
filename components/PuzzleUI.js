@@ -1,6 +1,6 @@
 import SlidingPuzzle from "./puzzles/SlidingPuzzle";
-import EscapeRoomV2 from "./puzzles/EscapeRoomV2";
 import MazePuzzle from "./puzzles/MazePuzzle";
+import RiddleRoom from "./puzzles/RiddleRoom";
 
 export default function PuzzleUI({
   puzzle,
@@ -13,15 +13,14 @@ export default function PuzzleUI({
     return <SlidingPuzzle puzzle={puzzle} onSolved={onSolved} />;
   }
 
-  if (puzzle.type === "escapeRoom") {
-    return <EscapeRoomV2 puzzle={puzzle} onSolved={onSolved} />;
-  }
-
   if (puzzle.type === "maze") {
     return <MazePuzzle puzzle={puzzle} onSolved={onSolved} />;
   }
 
-  // default text-input puzzles (riddle, math, code, etc.)
+  if (puzzle.type === "riddleRoom") {
+    return <RiddleRoom puzzle={puzzle} onSolved={onSolved} />;
+  }
+
   return (
     <div>
       <p>{puzzle.prompt}</p>
