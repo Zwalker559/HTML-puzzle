@@ -46,7 +46,6 @@ export default function PuzzlePage() {
       return;
     }
 
-    // NEW: prevent skipping
     if (numericIndex > 1 && !prog[numericIndex - 2]) {
       const firstUnsolved = prog.findIndex((p) => p === false) + 1;
       router.push(`/puzzle/${firstUnsolved}`);
@@ -76,7 +75,6 @@ export default function PuzzlePage() {
       return;
     }
 
-    // Mark current puzzle as solved
     prog[numericIndex - 1] = true;
     sessionStorage.setItem("progress", JSON.stringify(prog));
     setProgress(prog);
@@ -110,15 +108,12 @@ export default function PuzzlePage() {
     <div>
       <Timer onExpire={resetAll} />
       <h1>Puzzle {index}</h1>
-
-      {/* NEW: Progress bar */}
       <div className="progress-bar">
         <div className="progress-fill" style={{ width: `${percent}%` }} />
       </div>
       <p>
         Progress: {solvedCount} / {total}
       </p>
-
       <PuzzleUI
         puzzle={puzzle}
         input={input}
