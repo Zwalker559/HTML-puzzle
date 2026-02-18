@@ -20,7 +20,6 @@ export default function MazePuzzle({ puzzle, onSolved }) {
     if (next.x === goal.x && next.y === goal.y) onSolved();
   }
 
-  // --- SWIPE SUPPORT ---
   let startX = 0;
   let startY = 0;
 
@@ -42,13 +41,25 @@ export default function MazePuzzle({ puzzle, onSolved }) {
     }
   }
 
-  // --- RESPONSIVE TILE SIZE ---
-  const tileSize = Math.min(50, Math.floor(window.innerWidth / (size + 2)));
+  useEffect(() => {
+    function handleKey(e) {
+      if (e.key === "ArrowUp") move(0, -1);
+      if (e.key === "ArrowDown") move(0, 1);
+      if (e.key === "ArrowLeft") move(-1, 0);
+      if (e.key === "ArrowRight") move(1, 0);
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  });
+
+  const tileSize =
+    typeof window !== "undefined"
+      ? Math.min(50, Math.floor(window.innerWidth / (size + 2)))
+      : 40;
 
   return (
     <div onTouchStart={touchStart} onTouchEnd={touchEnd}>
       <p>Swipe or use buttons to reach the green goal.</p>
-
       <div
         style={{
           display: "grid",
@@ -85,7 +96,6 @@ export default function MazePuzzle({ puzzle, onSolved }) {
         })}
       </div>
 
-      {/* MOBILE BUTTONS */}
       <div style={{ marginTop: "20px", textAlign: "center" }}>
         <button onClick={() => move(0, -1)}>↑</button>
         <div>
