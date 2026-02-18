@@ -1,18 +1,42 @@
 {
   "timerSeconds": 150,
-  "finalQuestion": "How old am I?",
-  "finalAnswer": "15",
-  "finalSecret": "I kinda do find you cute, BUT your taken and I respect that and I still wanna be friends with you.",
+  "finalQuestion": "What walks on four legs in the morning, two at noon, and three in the evening?",
+  "finalAnswer": "man",
+  "finalSecret": "THE TREASURE IS BURIED UNDER THE OLD OAK TREE",
   "puzzles": [
-    { "type": "riddle", "prompt": "What ROTC branch am I?", "answers": ["Air Force"] },
+    {
+      "type": "riddleRoom",
+      "riddles": [
+        { "prompt": "What has to be broken before you can use it?", "answer": "egg", "digit": "3" },
+        { "prompt": "What has hands but can’t clap?", "answer": "clock", "digit": "7" },
+        { "prompt": "What gets wetter the more it dries?", "answer": "towel", "digit": "9" },
+        { "prompt": "What has keys but can't open locks?", "answer": "piano", "digit": "1" }
+      ]
+    },
     { "type": "sliding", "size": 3 },
-    { "type": "escapeRoom", "room": "office" },
     { "type": "maze", "size": 8 },
+    {
+      "type": "riddle",
+      "prompt": "I speak without a mouth and hear without ears. What am I?",
+      "answers": ["echo"]
+    },
     { "type": "math", "difficulty": 1 },
     { "type": "code", "length": 4 },
-    { "type": "riddle", "prompt": "What has keys but can't open locks?", "answers": ["piano"] },
+    {
+      "type": "riddleRoom",
+      "riddles": [
+        { "prompt": "What has a neck but no head?", "answer": "bottle", "digit": "4" },
+        { "prompt": "What can travel around the world while staying in a corner?", "answer": "stamp", "digit": "2" },
+        { "prompt": "What has one eye but cannot see?", "answer": "needle", "digit": "8" },
+        { "prompt": "What belongs to you but others use it more?", "answer": "name", "digit": "6" }
+      ]
+    },
     { "type": "sliding", "size": 4 },
-    { "type": "escapeRoom", "room": "vault" },
-    { "type": "riddle", "prompt": "What gets wetter the more it dries?", "answers": ["towel"] }
+    { "type": "maze", "size": 10 },
+    {
+      "type": "riddle",
+      "prompt": "What gets wetter the more it dries?",
+      "answers": ["towel"]
+    }
   ]
 }
